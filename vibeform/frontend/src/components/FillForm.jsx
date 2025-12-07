@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import Navbar from "./Navbar";
+import * as Icons from "lucide-react";
 
 export default function FillForm({ form, onComplete = () => {}, startIndex = 0 }) {
   const questions = form.questions || [];
@@ -131,7 +132,9 @@ export default function FillForm({ form, onComplete = () => {}, startIndex = 0 }
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
               >
-                {vibePoints} ✨
+               <div className="text-lg font-semibold text-pink-500 flex items-center justify-center gap-1" key={vibePoints} initial={{ scale: 0.8 }} animate={{ scale: 1 }}>
+                    {vibePoints} <Icons.Sparkles size={24} className="text-pink-500" />
+              </div>
               </motion.div>
             </div>
           </div>

@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { sampleForms } from "../data/sampleForms";
+import { Mail, Frown, Sparkles } from "lucide-react";
+
 
 export default function Dashboard() {
   const [forms, setForms] = useState(sampleForms);
@@ -51,7 +53,9 @@ export default function Dashboard() {
                 <h2 className="text-2xl font-semibold mb-1">{form.title}</h2>
                 <p className="text-gray-500 text-sm mb-2">{form.description}</p>
                 <div className="text-sm text-gray-400 flex items-center gap-2">
-                  <span>💌 {form.responses.length} responses</span>
+                  <span className="flex items-center gap-1">
+                     <Mail size={16} /> {form.responses.length} responses
+                  </span>
                   <span className="ml-auto bg-pink-200 text-pink-700 px-2 py-1 rounded-full text-xs font-semibold">
                     {form.questions.length} Qs
                   </span>
@@ -72,7 +76,9 @@ export default function Dashboard() {
             <p className="text-gray-600 mb-6">{selectedForm.description}</p>
 
             {selectedForm.responses.length === 0 ? (
-              <p className="text-gray-500">No responses yet. 😢</p>
+              <p className="flex items-center gap-1 text-gray-500">
+                    <Frown size={18} /> No responses yet.
+                    </p>
             ) : (
               <div className="space-y-4">
                 {selectedForm.responses.map((resp, idx) => (
@@ -81,7 +87,9 @@ export default function Dashboard() {
                     className="bg-white/60 backdrop-blur-lg p-4 rounded-2xl shadow hover:shadow-pink-400/50 transition"
                   >
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-500">Vibe Points: {resp.vibePoints} ✨</span>
+                      <span className="flex items-center gap-1">
+                         Vibe Points: {resp.vibePoints} <Sparkles size={16} />
+                      </span>
                       <span className="text-xs text-pink-600 font-semibold">{Object.keys(resp.answers).length} answers</span>
                     </div>
                     <ul className="ml-4 list-disc text-gray-700">

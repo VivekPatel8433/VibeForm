@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
+import { SparklesIcon } from "@heroicons/react/24/solid";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -18,7 +20,7 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setMessage("Logging in...");
+    setMessage("");
     window.location.href="/CreateForm"
   };
 
@@ -44,9 +46,10 @@ export default function Login() {
         onSubmit={handleLogin}
         className="relative z-10 bg-white bg-opacity-50 backdrop-blur-lg p-10 rounded-3xl shadow-2xl w-full max-w-sm border border-white/30"
       >
-        <h2 className="text-4xl font-bold mb-8 text-center text-pink-400 animate-pulse drop-shadow-lg">
-          ✨ Login
-        </h2>
+       <h2 className="text-4xl font-bold mb-8 text-center text-pink-400 animate-pulse drop-shadow-lg flex justify-center items-center gap-2">
+         <SparklesIcon className="w-8 h-8 text-pink-400" />
+           Login
+      </h2>
 
         <label className="block mb-2 text-sm font-medium text-gray-700">Email</label>
         <input

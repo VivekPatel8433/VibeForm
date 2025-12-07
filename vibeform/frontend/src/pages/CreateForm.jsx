@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { Smile, Meh, Frown, Flame } from "lucide-react";
+import { SparklesIcon } from "@heroicons/react/24/solid";
 
 export default function CreateForm() {
   const [title, setTitle] = useState("");
@@ -78,10 +80,11 @@ export default function CreateForm() {
         <Navbar isLoggedIn={true} />
         <form
           onSubmit={handleSubmit}
-          className="relative z-10 bg-white bg-opacity-50 backdrop-blur-lg p-10 rounded-3xl shadow-2xl border border-white/30"
+          className="relative z-10 bg-white bg-opacity-50 backdrop-blur-lg p-10 rounded-3xl shadow-2xl border border-white/30 rounded-lg"
         >
-          <h2 className="text-4xl font-bold mb-8 text-center text-pink-400 animate-pulse drop-shadow-lg">
-            ✨ Create a New Form
+          <h2 className="text-4xl font-bold mb-8 text-center text-pink-400 animate-pulse drop-shadow-lg flex justify-center items-center gap-2">
+              <SparklesIcon className="w-8 h-8 text-pink-400" />
+            Hey, Let's Create A VibeForm
           </h2>
 
           <label className="block mb-2 font-medium text-gray-700">Form Title</label>
@@ -99,7 +102,7 @@ export default function CreateForm() {
               <div key={q.id} className="mb-4 border p-4 rounded-xl bg-white/70">
                 <input
                   type="text"
-                  placeholder={`Question #${index + 1}`}
+                  placeholder={`Question ${index + 1}`}
                   value={q.question}
                   onChange={(e) => handleQuestionChange(index, e.target.value)}
                   className="w-full mb-2 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
@@ -124,11 +127,14 @@ export default function CreateForm() {
                       </button>
                     </div>
                   ))}
-                {q.type === "emoji" && (
-                  <div className="text-2xl flex gap-3 mt-2">
-                    {["😄","😐","😢","🔥"].map((em, i) => (
-                      <span key={i} className="cursor-pointer hover:scale-125 transition-transform">{em}</span>
-                    ))}
+               {q.type === "emoji" && (
+                 <div className="flex gap-4 mt-2 text-gray-600 text-2xl">
+                    {[Smile, Meh, Frown, Flame].map((Icon, i) => (
+                <Icon
+                     key={i}
+                     className="w-7 h-7 cursor-pointer hover:scale-125 transition-transform hover:text-pink-400"
+                />
+              ))}
                   </div>
                 )}
                 <p className="text-sm text-gray-400 mt-1">Type: {q.type}</p>
@@ -157,6 +163,14 @@ export default function CreateForm() {
               >
                 + Emoji Rating
               </button>
+              <button
+                type="button"
+                // onClick={() => )} Custom based
+                className="bg-pink-400 text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition"
+              >
+                + Customize
+              </button>
+              
             </div>
           </div>
 
@@ -164,7 +178,7 @@ export default function CreateForm() {
             type="submit"
             className="w-full bg-pink-400 text-white py-3 rounded-xl hover:bg-pink-500 hover:scale-105 transition-transform duration-200 shadow-lg hover:shadow-pink-400/50 font-semibold text-lg"
           >
-            Create Form
+            Preview Form
           </button>
         </form>
       </div>
