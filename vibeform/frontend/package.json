@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "axios": "^1.13.2",
     "canvas-confetti": "^1.9.4",
     "emoji-picker-react": "^4.16.1",
     "framer-motion": "^12.23.25",
+    "jsonwebtoken": "^9.0.3",
     "lucide": "^0.555.0",
     "lucide-react": "^0.555.0",
     "react": "^18.3.1",

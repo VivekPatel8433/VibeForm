@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import { SparklesIcon } from "@heroicons/react/24/solid";
-import axios from "axios";
+import axios from "axios"
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -18,18 +18,21 @@ export default function Login() {
     }))
   ).current;
 
-  const handleLogin = async (e) => {
+ const handleRegister = async (e) => {
   e.preventDefault();
   setMessage("");
 
   try {
-     const res = await axios.post("http://localhost:5000/api/auth/login", {
+     const res = await axios.post("http://localhost:5000/api/auth/register", {
            email, password
     });
 
     console.log(res.data);
-      window.location.href = "/createForm";
 
+    setMessage("Registration successful! Redirecting to login...");
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 1500);
   } catch (error) {
     console.log(error.response.data);
   }
@@ -54,12 +57,12 @@ export default function Login() {
       ))}
 
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleRegister}
         className="relative z-10 bg-white bg-opacity-50 backdrop-blur-lg p-10 rounded-3xl shadow-2xl w-full max-w-sm border border-white/30"
       >
        <h2 className="text-4xl font-bold mb-8 text-center text-pink-400 animate-pulse drop-shadow-lg flex justify-center items-center gap-2">
          <SparklesIcon className="w-8 h-8 text-pink-400" />
-           Login
+           Register
       </h2>
 
         <label className="block mb-2 text-sm font-medium text-gray-700">Email</label>
@@ -86,7 +89,7 @@ export default function Login() {
           type="submit"
           className="w-full bg-pink-400 text-white py-3 rounded-xl hover:bg-pink-500 hover:scale-105 transition-transform duration-200 shadow-lg hover:shadow-pink-400/60 text-lg font-semibold"
         >
-          Login
+          Register
         </button>
 
         {message && <p className="mt-4 text-red-500 text-center">{message}</p>}
