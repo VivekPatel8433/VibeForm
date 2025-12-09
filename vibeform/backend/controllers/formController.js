@@ -41,3 +41,16 @@ export const deleteForm = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Update Form
+export const updateForm = async (req, res) => {
+  const { formId } = req.params;
+  const { title, description, questions } = req.body;
+
+  const updatedForm = await Form.findByIdAndUpdate(
+    formId,
+    { title, description, questions },
+    { new: true }
+  );
+  res.status(200).json(updatedForm);
+};

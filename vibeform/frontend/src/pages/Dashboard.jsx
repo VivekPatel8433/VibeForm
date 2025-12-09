@@ -1,169 +1,156 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { sampleForms } from "../data/sampleForms";
-import * as Icons from "lucide-react"; // Import all icons dynamically
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import * as Icons from "lucide-react";
+import axios from "axios";
 
 export default function Dashboard() {
-  const [forms, setForms] = useState(sampleForms);
+  const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
 
-  // Floating bubbles
-  const bubbles = useRef(
-    Array.from({ length: 12 }).map(() => ({
-      top: Math.random() * 100,
-      left: Math.random() * 100,
-      size: 20 + Math.random() * 40,
-      delay: Math.random() * 5,
-      color: ["#FDCFE8", "#B5EAEA", "#FFD6A5", "#D0C6FF"][Math.floor(Math.random() * 4)],
-    }))
-  ).current;
+  useEffect(() => {
+    const fetchForms = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/forms`);
+        setForms(res.data);
+      } catch (err) {
+        console.error("Error fetching forms:", err);
+      }
+    };
+    fetchForms();
+  }, []);
 
-  const deleteForm = (id) => {
-    setForms(forms.filter(f => f.id !== id));
-    if (selectedForm?.id === id) setSelectedForm(null);
+  const deleteForm = async (id) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/forms/${id}`);
+      setForms(forms.filter(f => f._id !== id));
+      if (selectedForm?._id === id) setSelectedForm(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const deleteResponse = async (formId, respId) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/forms/${formId}/responses/${respId}`);
+      const updatedForms = forms.map(f =>
+        f._id === formId
+          ? { ...f, responses: f.responses.filter(r => r._id !== respId) }
+          : f
+      );
+      setForms(updatedForms);
+      if (selectedForm?._id === formId) setSelectedForm(updatedForms.find(f => f._id === formId));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 overflow-hidden">
-      {bubbles.map((b, i) => (
-        <span
-          key={i}
-          className="absolute rounded-full opacity-20 animate-bubble"
-          style={{
-            top: `${b.top}%`,
-            left: `${b.left}%`,
-            width: `${b.size}px`,
-            height: `${b.size}px`,
-            backgroundColor: b.color,
-            animationDelay: `${b.delay}s`,
-          }}
-        />
-      ))}
-
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900 text-white transition-all duration-500">
       <Navbar isLoggedIn={true} />
-
-      <div className="relative z-10 p-6 max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6 text-pink-500 drop-shadow-lg animate-pulse">Dashboard</h1>
-
-        {!selectedForm ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {forms.map((form) => (
-              <div
-                key={form.id}
-                className="bg-white/60 backdrop-blur-lg p-5 rounded-3xl shadow-lg hover:scale-105 hover:shadow-pink-400/50 transition-transform cursor-pointer"
-              >
-                <div onClick={() => setSelectedForm(form)}>
-                  <h2 className="text-2xl font-semibold mb-1">{form.title}</h2>
-                  <p className="text-gray-500 text-sm mb-2">{form.description}</p>
-                  <div className="text-sm text-gray-400 flex items-center gap-2">
-                    <span className="flex items-center gap-1">
-                      <Icons.Mail size={16} /> {form.responses.length} responses
-                    </span>
-                    <span className="ml-auto bg-pink-200 text-pink-700 px-2 py-1 rounded-full text-xs font-semibold">
-                      {form.questions.length} Qs
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-2 flex gap-2">
-                  <button
-                    onClick={() => deleteForm(form.id)}
-                    className="text-red-500 hover:text-red-700 transition"
-                  >
-                    <Icons.Trash2 size={20} />
-                  </button>
-                  <button
-                    onClick={() => alert("Edit Form functionality coming soon!")}
-                    className="text-blue-500 hover:text-blue-700 transition"
-                  >
-                    <Icons.Edit2 size={20} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div>
-            <button
-              onClick={() => setSelectedForm(null)}
-              className="mb-6 px-4 py-2 bg-pink-400 text-white rounded-xl hover:bg-pink-500 transition"
+      <div className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row gap-6">
+        
+        {/* Form List */}
+        <div className="md:w-1/3 space-y-4">
+          <h2 className="text-2xl font-bold mb-2 text-neon-purple animate-pulse">Your Forms</h2>
+          {forms.map(f => (
+            <div
+              key={f._id}
+              onClick={() => setSelectedForm(f)}
+              className={`p-4 rounded-2xl shadow-md cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                selectedForm?._id === f._id ? "bg-neon-purple/20 border-2 border-neon-purple" : "bg-gray-800"
+              }`}
             >
-              ← Back
-            </button>
+              <h3 className="font-semibold text-lg">{f.title}</h3>
+              <p className="text-gray-400 text-sm mt-1">{f.questions.length} Qs • {f.responses?.length || 0} responses</p>
+              <button
+                onClick={(e) => { e.stopPropagation(); deleteForm(f._id); }}
+                className="mt-2 text-red-500 text-sm hover:underline"
+              >
+                Delete Form
+              </button>
+            </div>
+          ))}
+        </div>
 
-            <h2 className="text-3xl font-bold mb-2 text-pink-500">{selectedForm.title}</h2>
-            <p className="text-gray-600 mb-6">{selectedForm.description}</p>
+        {/* Selected Form Panel */}
+        <div className="md:w-2/3 bg-gray-900 p-6 rounded-2xl shadow-lg border border-neon-purple transition-all duration-300">
+          {!selectedForm ? (
+            <p className="text-gray-400 italic animate-pulse">Select a form to view questions & responses</p>
+          ) : (
+            <>
+              <button
+                onClick={() => setSelectedForm(null)}
+                className="mb-4 px-4 py-2 bg-neon-purple text-black font-bold rounded-xl hover:bg-neon-pink transition"
+              >
+                ← Back to Forms
+              </button>
 
-            {selectedForm.responses.length === 0 ? (
-              <p className="flex items-center gap-1 text-gray-500">
-                <Icons.Frown size={18} /> No responses yet.
-              </p>
-            ) : (
-              <>
-                <div className="space-y-4 mb-6">
-                  {selectedForm.responses.map((resp, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white/60 backdrop-blur-lg p-4 rounded-2xl shadow hover:shadow-pink-400/50 transition"
-                    >
+              <h2 className="text-2xl font-bold text-neon-purple animate-pulse">{selectedForm.title}</h2>
+              <p className="text-gray-300 mb-6">{selectedForm.description}</p>
+
+              {/* Questions */}
+              <h3 className="text-lg font-semibold mb-2 text-neon-cyan">Questions</h3>
+              <ul className="list-disc ml-5 mb-6">
+                {selectedForm.questions.map((q) => (
+                  <li key={q._id} className="hover:text-neon-pink transition">
+                    {q.question}{" "}
+                    <span className="text-xs text-gray-400">
+                      ({q.type === "multiple" ? "Multiple Choice" : q.type === "emoji" ? "Emoji Rating" : q.type})
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Responses */}
+              <h3 className="text-lg font-semibold mb-2 text-neon-cyan">Responses</h3>
+              {selectedForm.responses.length === 0 ? (
+                <p className="text-gray-400 flex items-center gap-2">
+                  <Icons.Frown size={18} /> No responses yet
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {selectedForm.responses.map(r => (
+                    <div key={r._id} className="border-l-4 border-neon-purple bg-gray-800 p-4 rounded-lg shadow-sm hover:shadow-neon transition-all duration-300">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="flex items-center gap-1">
-                          Vibe Points: {resp.vibePoints} <Icons.Sparkles size={16} />
-                        </span>
-                        <span className="text-xs text-pink-600 font-semibold">{Object.keys(resp.answers).length} answers</span>
+                        <span className="font-semibold text-neon-pink">Vibe Points: {r.vibePoints}</span>
+                        <button
+                          onClick={() => deleteResponse(selectedForm._id, r._id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <Icons.Trash2 />
+                        </button>
                       </div>
-                      <ul className="ml-4 list-disc text-gray-700">
-                        {Object.entries(resp.answers).map(([qid, ans]) => (
-                          <li key={qid}>
-                            <strong>{qid}:</strong> {ans}
-                          </li>
-                        ))}
+                      <ul className="ml-4 list-disc text-gray-200">
+                        {r.answers.map((a) => {
+                          const question = selectedForm.questions.find(
+                            (q) => q.id === a.questionId || q._id === a.questionId
+                          );
+                          return (
+                            <li key={a._id || a.questionId} className="hover:text-neon-cyan transition">
+                              <strong>{question?.question || "Unknown Question"}:</strong>{" "}
+                              {Array.isArray(a.answer) ? a.answer.join(", ") : a.answer}
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   ))}
                 </div>
-
-                <div className="bg-white/60 backdrop-blur-lg p-4 rounded-3xl shadow mb-6">
-                  <h3 className="text-xl font-semibold mb-2">Summary Chart</h3>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <BarChart
-                      data={selectedForm.responses.reduce((acc, resp) => {
-                        Object.values(resp.answers).forEach(ans => {
-                          const idx = acc.findIndex(a => a.name === ans);
-                          if (idx > -1) acc[idx].value += 1;
-                          else acc.push({ name: ans, value: 1 });
-                        });
-                        return acc;
-                      }, [])}
-                    >
-                      <XAxis dataKey="name" />
-                      <YAxis allowDecimals={false} />
-                      <Tooltip />
-                      <Bar dataKey="value" fill="#F472B6">
-                        {/* Each bar can use a color */}
-                        {selectedForm.responses.map((_, index) => (
-                          <Cell key={index} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </>
-            )}
-          </div>
-        )}
+              )}
+            </>
+          )}
+        </div>
       </div>
 
+      {/* Neon animation classes */}
       <style>
         {`
-          @keyframes bubble-move {
-            0%,100% { transform: translateY(0) translateX(0); opacity: 0.2; }
-            50% { transform: translateY(-20px) translateX(15px); opacity: 0.5; }
-          }
-          .animate-bubble {
-            animation: bubble-move 8s infinite ease-in-out;
-            border-radius: 50%;
-          }
+          .text-neon-purple { color: #b800ff; text-shadow: 0 0 5px #b800ff, 0 0 10px #b800ff; }
+          .text-neon-cyan { color: #00fff7; text-shadow: 0 0 5px #00fff7, 0 0 10px #00fff7; }
+          .text-neon-pink { color: #ff00d4; text-shadow: 0 0 5px #ff00d4, 0 0 10px #ff00d4; }
+          .bg-neon-purple { background-color: rgba(184, 0, 255, 0.3); }
+          .bg-neon-pink { background-color: rgba(255, 0, 212, 0.3); }
+          .hover\\:shadow-neon:hover { box-shadow: 0 0 20px #b800ff, 0 0 40px #ff00d4, 0 0 60px #00fff7; }
         `}
       </style>
     </div>

@@ -1,81 +1,104 @@
 import React, { useState, useEffect } from "react";
 import Confetti from "react-confetti";
-import { useNavigate } from "react-router-dom";
-import { Smile, Star, Sparkles, Heart, ThumbsUp } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Save, Smile, Star, Sparkles, Heart, ThumbsUp } from "lucide-react";
+import axios from "axios";
 
-export default function ThankYou({ vibePoints = 20 }) {
-  const [showConfetti, setShowConfetti] = useState(true);
+export default function ThankYou({ onSave }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { answers, vibePoints, formTitle, formId } = location.state || {};
+
+  const [showConfetti, setShowConfetti] = useState(true);
+  const [saveStatus, setSaveStatus] = useState(null); // For dev message
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowConfetti(false), 5000); // Confetti lasts 5s
+    const timer = setTimeout(() => setShowConfetti(false), 5000);
     return () => clearTimeout(timer);
   }, []);
 
-  const icons = [Smile, Star, Sparkles, Heart, ThumbsUp]; // Dynamic icon list
-
-  const shareText = encodeURIComponent("I just completed a VibeForm! 🎉 Check it out!");
+  const icons = [Smile, Star, Sparkles, Heart, ThumbsUp];
+  const shareText = encodeURIComponent("I just completed a VibeForm!");
   const shareUrl = encodeURIComponent(window.location.href);
 
+  const handleSaveForm = async () => {
+    try {
+      if (formId) {
+        await axios.post(`${import.meta.env.VITE_API_URL}/responses/${formId}`, { answers, vibePoints });
+      }
+
+      if (onSave) onSave({ title: formTitle, answers, vibePoints, _id: formId });
+
+      console.log(" Form saved successfully", { formTitle, answers, vibePoints });
+      setSaveStatus("Form saved successfully!");
+      navigate("/Dashboard");
+    } catch (err) {
+      console.error(" Error saving form", err);
+      setSaveStatus("Error saving form. Check console.");
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative bg-gradient-to-br from-pink-300 via-purple-400 to-cyan-300 overflow-hidden">
-      {showConfetti && <Confetti numberOfPieces={200} recycle={false} />}
+    <div className="min-h-screen flex flex-col items-center justify-center relative bg-gradient-to-br from-pink-300 via-purple-400 to-cyan-300 overflow-hidden px-4">
+      {showConfetti && <Confetti numberOfPieces={250} recycle={false} />}
 
-      <div className="text-center px-6 py-10 bg-white/20 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 animate-fade-in">
-        <h1 className="text-5xl font-bold text-pink-500 mb-4 drop-shadow-neon animate-pulse">
-          🎉 You’re awesome! 🎉
+      <div className="text-center max-w-md w-full px-6 py-12 bg-white/20 backdrop-blur-xl rounded-[40px] shadow-2xl border border-white/40">
+
+        <h1 className="text-5xl font-extrabold text-white mb-4 neon-glow animate-neon-pulse">
+          You're Awesome!
         </h1>
-        <p className="text-xl text-gray-800 mb-6">
-          +{vibePoints} Vibe Points earned
-        </p>
 
-        <div className="mb-6 flex justify-center gap-4 animate-bounce">
+        <p className="text-2xl font-semibold text-gray-900 mb-6">{vibePoints} Vibe Points</p>
+
+        {/* Floating Icons */}
+        <div className="mb-8 flex justify-center gap-6 flex-wrap">
           {icons.map((Icon, index) => (
-            <Icon key={index} size={32} className="text-yellow-400" />
+            <Icon key={index} size={40} className={`text-yellow-300`} />
           ))}
         </div>
 
-        <div className="mb-6 p-4 bg-white/20 rounded-lg shadow-inner border border-white/30">
-          <h2 className="text-lg font-semibold mb-2">Share your achievement!</h2>
-          <div className="flex flex-wrap gap-2 justify-center">
+        {/* Share Section */}
+        <div className="mb-6 p-4 bg-white/30 rounded-xl shadow-lg border border-white/40">
+          <h2 className="text-lg font-semibold mb-3 text-gray-900">Share your vibe!</h2>
+          <div className="flex flex-wrap gap-3 justify-center">
             <a
               href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition"
+              className="px-4 py-2 rounded-xl bg-blue-500 text-white font-semibold hover:bg-blue-600 transition"
             >
               Share on Twitter
             </a>
+
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-blue-700 text-white rounded-xl hover:bg-blue-800 transition"
+              className="px-4 py-2 rounded-xl bg-blue-700 text-white font-semibold hover:bg-blue-800 transition"
             >
               Share on Facebook
             </a>
           </div>
         </div>
 
+        {/* Save Form Button */}
+        <button
+          onClick={handleSaveForm}
+          className="px-6 py-3 bg-green-500 text-white rounded-xl flex items-center gap-2 font-medium hover:bg-green-600 transition mb-4 w-full"
+        >
+          <Save size={20} /> Save Form
+        </button>
+
+        {saveStatus && <p className="text-sm text-gray-800 mb-4">{saveStatus}</p>}
+
+        {/* Create Another Form */}
         <button
           onClick={() => navigate("/")}
-          className="mt-4 px-6 py-3 bg-pink-400 text-white rounded-xl hover:bg-pink-500 hover:scale-105 transition-transform shadow-lg"
+          className="px-6 py-3 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600 transition w-full"
         >
           Create Another Form
         </button>
       </div>
-
-      <style>
-        {`
-          @keyframes fade-in { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-          .animate-fade-in { animation: fade-in 0.5s ease-out; }
-
-          @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-          .animate-bounce { animation: bounce 0.7s infinite; }
-
-          .drop-shadow-neon { text-shadow: 0 0 8px #ff77ff, 0 0 12px #00ffff, 0 0 20px #ff77ff; }
-        `}
-      </style>
     </div>
   );
 }
