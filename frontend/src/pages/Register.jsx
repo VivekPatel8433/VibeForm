@@ -3,8 +3,6 @@ import { SparklesIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
-
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,10 +24,10 @@ export default function Register() {
     setMessage("");
 
     try {
-     const res = await axios.post(`${BASE_URL}/auth/register`, {
-  email,
-  password,
-});
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
+         email,
+        password,
+    });
       
       console.log(res.data);
 
