@@ -3,6 +3,7 @@ import { SparklesIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -25,10 +26,10 @@ export default function Login() {
     setMessage("");
 
     try {
-     const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-         email,
-        password,
-    });
+       const res = await axios.post(`${BASE_URL}/auth/login`, {
+  email,
+  password,
+});
 
 
       localStorage.setItem("token", res.data.token);
