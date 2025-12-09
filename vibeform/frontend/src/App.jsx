@@ -7,6 +7,7 @@ import CreateForm from "./pages/CreateForm";
 import Login from "./pages/Login";
 import PreviewForm from "./components/PreviewForm";
 import Register from "./pages/Register";
+import ThankYou from "./pages/ThankYou";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/CreateForm" element={<CreateForm/>} />
         <Route path="/Login" element={<Login/>} />
         <Route path="/preview" element={<PreviewForm/>} />
+        <Route path="/ThankYou" element={<ThankYou/>} />
         
       </Routes>
     </BrowserRouter>

@@ -173,15 +173,15 @@ export default function CreateForm() {
                     </div>
                   ))}
 
-                {q.type === "emoji" && (
-  <div className="mb-2">
-    {/* Display selected emojis */}
-    <div className="flex gap-2 flex-wrap mb-2">
-      {q.options.map((emo, oIndex) => (
-        <div
-          key={oIndex}
-          className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded"
-        >
+          {q.type === "emoji" && (
+              <div className="mb-2">
+         {/* Display selected emojis */}
+              <div className="flex gap-2 flex-wrap mb-2">
+         {q.options.map((emo, oIndex) => (
+              <div
+                key={oIndex}
+                className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded"
+          >
           <span className="text-2xl">{emo}</span>
           <button
             type="button"
@@ -198,31 +198,30 @@ export default function CreateForm() {
       ))}
     </div>
 
-    {/* Button to open emoji picker */}
-    <button
-      type="button"
-      onClick={() => setShowPicker(showPicker === index ? null : index)}
-      className="px-3 py-1 bg-cyan-400 text-white rounded hover:bg-cyan-500"
-    >
-      + Select Emoji
-    </button>
+           {/* Button to open emoji picker */}
+         <button
+             type="button"
+             onClick={() => setShowPicker(showPicker === index ? null : index)}
+             className="px-3 py-1 bg-cyan-400 text-white rounded hover:bg-cyan-500"
+          >
+            + Select Emoji
+          </button>
 
-    {/* Emoji picker popup */}
-    {showPicker === index && (
-      <div className="mt-2 z-50">
-        <EmojiPicker
-          onEmojiClick={(emoji) => {
-            const newQuestions = [...questions];
-            newQuestions[index].options.push(emoji.emoji);
-            setQuestions(newQuestions);
-            setShowPicker(null); // close picker after selection
-          }}
-        />
-      </div>
+         {/* Emoji picker popup */}
+         {showPicker === index && (
+             <div className="mt-2 z-50">
+             <EmojiPicker
+               onEmojiClick={(emoji) => {
+               const newQuestions = [...questions];
+               newQuestions[index].options.push(emoji.emoji);
+               setQuestions(newQuestions);
+               setShowPicker(null); // close picker after selection
+               }}
+             />
+             </div>
+           )}
+       </div>
     )}
-  </div>
-)}
-
 
                 <p className="text-sm text-gray-400 mt-1">Type: {q.type}</p>
               </div>
