@@ -24,11 +24,11 @@ export default function Register() {
     setMessage("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
-        email,
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
+         email,
         password,
       });
-
+      
       console.log(res.data);
 
       window.location.href = "/login"
