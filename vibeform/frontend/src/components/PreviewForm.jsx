@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import { SparklesIcon } from "@heroicons/react/24/solid";
+import EmojiPicker from "emoji-picker-react";
 import Confetti from "react-confetti";
 
 export default function FillForm() {
@@ -11,6 +12,7 @@ export default function FillForm() {
   const [answers, setAnswers] = useState(
     formData?.questions.map((q) => ({ id: q.id, answer: q.type === "emoji" ? [] : "" })) || []
   );
+  const [showPicker, setShowPicker] = useState(null);
   const [completedQuestions, setCompletedQuestions] = useState([]);
   const [xp, setXp] = useState(0);
 
@@ -23,20 +25,23 @@ export default function FillForm() {
     handleCompletion(qIndex);
   };
 
-  const handleEmojiSelect = (qIndex, emoji) => {
+  const handleEmojiClick = (qIndex, emoji) => {
     const newAnswers = [...answers];
-    // For single selection, replace array; for multi-selection, push
-    if (!newAnswers[qIndex].answer.includes(emoji)) {
-      newAnswers[qIndex].answer.push(emoji);
-      setAnswers(newAnswers);
-      handleCompletion(qIndex);
-    }
+    newAnswers[qIndex].answer.push(emoji.emoji);
+    setAnswers(newAnswers);
+    handleCompletion(qIndex);
+  };
+
+  const deleteEmoji = (qIndex, eIndex) => {
+    const newAnswers = [...answers];
+    newAnswers[qIndex].answer.splice(eIndex, 1);
+    setAnswers(newAnswers);
   };
 
   const handleCompletion = (qIndex) => {
     if (!completedQuestions.includes(qIndex)) {
       setCompletedQuestions([...completedQuestions, qIndex]);
-      setXp((prev) => prev + 10); // XP per question answered
+      setXp((prev) => prev + 10); // Gain XP per answered question
     }
   };
 
@@ -53,8 +58,9 @@ export default function FillForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-200 via-pink-300 to-purple-200 flex justify-center py-10 relative">
+      {/* Confetti when XP increases */}
       {completedQuestions.length > 0 && <Confetti recycle={false} numberOfPieces={50} />}
-      
+
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-2xl bg-white/20 backdrop-blur-sm p-10 rounded-3xl shadow-2xl border border-white/30 animate-slide-in"
@@ -112,26 +118,42 @@ export default function FillForm() {
               </div>
             )}
 
-            {/* Emoji Question */}
+            {/* Emoji */}
             {q.type === "emoji" && (
-              <div className="flex flex-wrap gap-3 mt-2">
-                {q.options.map((emo, eIndex) => {
-                  const selected = answers[index].answer.includes(emo);
-                  return (
-                    <button
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {answers[index].answer.map((emo, eIndex) => (
+                    <div
                       key={eIndex}
-                      type="button"
-                      onClick={() => handleEmojiSelect(index, emo)}
-                      className={`text-3xl p-2 rounded transition transform ${
-                        selected
-                          ? "scale-125 bg-pink-200 drop-shadow-neon"
-                          : "hover:scale-110 hover:bg-white/20"
-                      }`}
+                      className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded animate-bounce"
                     >
-                      {emo}
-                    </button>
-                  );
-                })}
+                      <span className="text-2xl">{emo}</span>
+                      <button
+                        type="button"
+                        onClick={() => deleteEmoji(index, eIndex)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowPicker(showPicker === index ? null : index)}
+                  className="px-3 py-1 bg-cyan-400 text-white rounded hover:bg-cyan-500 animate-bounce"
+                >
+                  + Select Emoji
+                </button>
+
+                {showPicker === index && (
+                  <div className="mt-2 z-50">
+                    <EmojiPicker
+                      onEmojiClick={(emoji) => handleEmojiClick(index, emoji)}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -139,7 +161,6 @@ export default function FillForm() {
 
         <button
           type="submit"
-          onSubmit={"/ThankYou"}
           className="w-full bg-pink-400 text-white py-3 rounded-xl hover:bg-pink-500 hover:scale-105 transition-transform duration-200 shadow-lg font-semibold text-lg animate-bounce"
         >
           Submit Form
@@ -156,8 +177,6 @@ export default function FillForm() {
 
           @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
           .animate-bounce { animation: bounce 0.5s infinite; }
-
-          .drop-shadow-neon { text-shadow: 0 0 8px #ff77ff, 0 0 12px #00ffff, 0 0 20px #ff77ff; }
         `}
       </style>
     </div>

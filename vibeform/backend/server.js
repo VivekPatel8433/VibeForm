@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv"
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.js";
+import formRoutes from "./routes/formRoutes.js";
+import responseRoutes from "./routes/responseRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -14,6 +16,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/forms", formRoutes);
+app.use("/api/responses", responseRoutes);
 
 app.get("/", (req, res) => {
   res.send("VibeForm API running");

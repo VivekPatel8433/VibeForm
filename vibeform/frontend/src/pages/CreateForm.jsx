@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Smile, Meh, Frown, Flame, Trash2 } from "lucide-react";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import EmojiPicker from "emoji-picker-react";
+import axios from "axios"
 
 export default function CreateForm() {
   const [title, setTitle] = useState("");
@@ -67,16 +68,17 @@ export default function CreateForm() {
     setQuestions(newQuestions);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = {
-      id: crypto.randomUUID(),
-      title,
-      description: "A VibeForm survey",
-      questions,
-    };
-    navigate("/preview", { state: { formData } });
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const payload = { title, description: "A VibeForm survey", questions };
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/forms`, payload);
+    navigate(`/preview/${res.data._id}`);
+  } catch (err) {
+    console.error("Error creating form:", err);
+    alert("Failed to create form. Try again.");
+  }
+};
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-cyan-200 via-pink-300 to-purple-200 overflow-hidden flex justify-center items-start py-10">
