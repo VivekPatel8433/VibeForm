@@ -72,7 +72,14 @@ export default function CreateForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const payload = { title, description: "VibeForm", questions };
+        const cleanQuestions = questions.map(q => ({
+         ...q,
+        options:
+        q.type === "multiple" || q.type === "emoji"
+      ? q.options.filter(opt => opt.trim() !== "")
+      : []
+    }));
+      const payload = { title, description: "VibeForm", questions: cleanQuestions };
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/forms`, payload);
       navigate(`/Preview/${res.data._id}`);
     } catch (err) {

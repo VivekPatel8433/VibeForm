@@ -36,7 +36,7 @@ export default function Register() {
 
     } catch (error) {
       console.log(error.response?.data || error);
-      setMessage("Registration failed.");
+      setMessage("Email Already Exists. Proceed To Login");
     }
   };
 

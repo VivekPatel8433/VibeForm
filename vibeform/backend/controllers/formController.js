@@ -7,6 +7,7 @@ export const createForm = async (req, res) => {
     const form = await Form.create(req.body);
     res.status(201).json(form);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };

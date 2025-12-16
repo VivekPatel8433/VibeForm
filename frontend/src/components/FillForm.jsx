@@ -50,6 +50,7 @@ export default function FillForm({ form }) {
     const qid = q._id;
     const currentAns = answers[qid];
 
+    // Handle all text-based input types
     if (q.type === "short" || q.type === "text") {
       return (
         <input
@@ -57,6 +58,53 @@ export default function FillForm({ form }) {
           placeholder="Type your answer..."
           value={currentAns || ""}
           onChange={e => recordAnswer(qid, e.target.value, 5)}
+          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+      );
+    }
+
+    if (q.type === "email") {
+      return (
+        <input
+          type="email"
+          placeholder="your@email.com"
+          value={currentAns || ""}
+          onChange={e => recordAnswer(qid, e.target.value, 5)}
+          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+      );
+    }
+
+    if (q.type === "phone") {
+      return (
+        <input
+          type="tel"
+          placeholder="123-456-7890"
+          value={currentAns || ""}
+          onChange={e => recordAnswer(qid, e.target.value, 5)}
+          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+      );
+    }
+
+    if (q.type === "number") {
+      return (
+        <input
+          type="number"
+          placeholder="Enter a number..."
+          value={currentAns || ""}
+          onChange={e => recordAnswer(qid, e.target.value, 5)}
+          className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+      );
+    }
+
+    if (q.type === "date") {
+      return (
+        <input
+          type="date"
+          value={currentAns || ""}
+          onChange={e => recordAnswer(qid, e.target.value, 8)}
           className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400"
         />
       );
@@ -108,7 +156,7 @@ export default function FillForm({ form }) {
       );
     }
 
-    return <div>Unknown question type</div>;
+    return <div className="text-red-500 p-4 border border-red-300 rounded-lg">Unknown question type: {q.type}</div>;
   };
 
   if (!form) return <p>Loading form...</p>;
