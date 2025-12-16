@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import bgVideo from "../assets/24370-342401472.mp4"; // same video
+import bgVideo from "../assets/24370-342401472.mp4";
 
 export default function FillForm({ form }) {
   const navigate = useNavigate();
@@ -236,7 +236,7 @@ export default function FillForm({ form }) {
     if (q.type === "emoji") {
       const selectedEmojis = currentAns || [];
       return (
-        <div className="flex gap-4 justify-center flex-wrap">
+        <div className="overflow-x-auto flex gap-2 mt-2 py-1">
           {q.options.map(emoji => {
             const isSelected = selectedEmojis.includes(emoji);
             const toggleEmoji = () => {
@@ -249,7 +249,7 @@ export default function FillForm({ form }) {
               <button
                 key={emoji}
                 onClick={toggleEmoji}
-                className={`text-4xl p-3 rounded-full border ${
+                className={`flex-shrink-0 text-3xl sm:text-4xl p-2 sm:p-3 rounded-full border ${
                   isSelected ? "bg-yellow-200" : "bg-white/30"
                 } ${error ? "border-red-500" : ""}`}
               >
@@ -257,7 +257,7 @@ export default function FillForm({ form }) {
               </button>
             );
           })}
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          {error && <p className="text-red-500 text-sm mt-2 ml-2">{error}</p>}
         </div>
       );
     }
@@ -273,7 +273,6 @@ export default function FillForm({ form }) {
 
   return (
     <div className="relative min-h-screen flex flex-col">
-      {/* Video Background */}
       <video
         src={bgVideo}
         autoPlay
@@ -282,7 +281,6 @@ export default function FillForm({ form }) {
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
       />
 
-      {/* Neon Bubbles */}
       {bubbles.map((b, i) => (
         <span
           key={i}
@@ -301,15 +299,15 @@ export default function FillForm({ form }) {
 
       <Navbar isLoggedIn={false} />
 
-      <div className="flex-grow flex justify-center p-6 z-10 relative">
-        <div className="w-full max-w-2xl flex flex-col gap-6">
+      <div className="flex-grow flex flex-col justify-center p-4 sm:p-6 z-10 relative overflow-auto">
+        <div className="w-full max-w-full sm:max-w-2xl flex flex-col gap-6">
           {/* Header */}
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-pink-400">{form.title}</h2>
-              {form.description && <p className="text-sm text-gray-200">{form.description}</p>}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div className="mb-3 sm:mb-0">
+              <h2 className="text-2xl sm:text-3xl font-bold text-pink-400">{form.title}</h2>
+              {form.description && <p className="text-xs sm:text-sm text-gray-200">{form.description}</p>}
             </div>
-            <div className="text-right flex flex-col items-center">
+            <div className="flex flex-col items-start sm:items-center">
               <div className="text-xs text-gray-400">Vibe Points</div>
               <motion.div
                 key={vibePoints}
@@ -337,17 +335,17 @@ export default function FillForm({ form }) {
             </div>
             {missingRequiredQuestions.length > 0 && (
               <p
-                className="text-sm text-red-500 mt-1 cursor-pointer"
+                className="text-xs sm:text-sm text-red-500 mt-1 cursor-pointer"
                 onClick={() => setIndex(missingRequiredQuestions[0].idx)}
               >
                 {missingRequiredQuestions.length} required question
-                {missingRequiredQuestions.length > 1 ? "s" : ""} remaining — click to jump
+                {missingRequiredQuestions.length > 1 ? "s" : ""} remaining — tap to jump
               </p>
             )}
           </div>
 
           {/* Question Card */}
-          <div className="bg-white/20 backdrop-blur-lg border border-white/30 rounded-3xl shadow-2xl p-6 w-full">
+          <div className="bg-white/20 backdrop-blur-lg border border-white/30 rounded-3xl shadow-2xl p-4 sm:p-6 w-full">
             <AnimatePresence mode="wait">
               <motion.div
                 key={questions[index]._id}
@@ -357,31 +355,31 @@ export default function FillForm({ form }) {
                 transition={{ duration: 0.3 }}
               >
                 <div className="mb-4">
-                  <div className="text-sm text-gray-200">
+                  <div className="text-xs sm:text-sm text-gray-200">
                     Question {index + 1} / {total}
                   </div>
-                  <h3 className="text-xl font-semibold mt-2 text-white">
+                  <h3 className="text-lg sm:text-xl font-semibold mt-1 sm:mt-2 text-white">
                     {questions[index].question}
                     {questions[index].required && <span className="text-red-500 ml-1">*</span>}
                   </h3>
                 </div>
 
-                <div className="mb-6">{renderQuestion(questions[index])}</div>
+                <div className="mb-4 sm:mb-6">{renderQuestion(questions[index])}</div>
 
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
                   <button
                     onClick={goBack}
                     disabled={index === 0}
-                    className="px-4 py-2 rounded-lg bg-white/30 text-white disabled:opacity-40 hover:bg-white/50 transition"
+                    className="px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-white/30 text-white disabled:opacity-40 hover:bg-white/50 transition w-full sm:w-auto"
                   >
                     Back
                   </button>
 
-                  <div className="flex items-center gap-3">
-                    <div className="text-sm text-gray-200 mr-2">{answeredCount} answered</div>
+                  <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    <div className="text-xs sm:text-sm text-gray-200">{answeredCount} answered</div>
                     <button
                       onClick={goNext}
-                      className="px-5 py-2 rounded-lg bg-pink-500 text-white shadow hover:bg-pink-600 transition"
+                      className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-pink-500 text-white shadow hover:bg-pink-600 transition w-full sm:w-auto"
                     >
                       {index === total - 1 ? "Finish" : "Next"}
                     </button>
@@ -393,7 +391,6 @@ export default function FillForm({ form }) {
         </div>
       </div>
 
-      {/* Styles */}
       <style>
         {`
           @keyframes bubble-move {
