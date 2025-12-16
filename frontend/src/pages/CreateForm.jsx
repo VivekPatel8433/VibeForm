@@ -2,18 +2,18 @@ import React, { useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
-import { SparklesIcon } from "@heroicons/react/24/solid";
+import { SparklesIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
+import bgVideo from "../assets/24370-342401472.mp4";
 
 export default function CreateForm() {
-  
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([]);
   const [showPicker, setShowPicker] = useState(null);
-  const navigate = useNavigate();
 
-  // Neon bubbles (CSS animation)
+  // Neon bubbles
   const bubbles = useRef(
     Array.from({ length: 15 }).map(() => ({
       top: Math.random() * 100,
@@ -24,17 +24,18 @@ export default function CreateForm() {
         "rgba(0,255,255,0.5)",
         "rgba(255,0,255,0.5)",
         "rgba(255,255,0,0.5)",
-        "rgba(0,255,128,0.5)",
+        "rgba(255,0,128,0.5)",
       ][Math.floor(Math.random() * 4)],
     }))
   ).current;
 
+  // Question functions
   const addQuestion = (type) => {
     const newQuestion = {
       type,
       question: "",
       options: type === "multiple" || type === "emoji" ? [""] : [],
-      required: false
+      required: false,
     };
     setQuestions([...questions, newQuestion]);
   };
@@ -72,13 +73,13 @@ export default function CreateForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const cleanQuestions = questions.map(q => ({
-         ...q,
+      const cleanQuestions = questions.map((q) => ({
+        ...q,
         options:
-        q.type === "multiple" || q.type === "emoji"
-      ? q.options.filter(opt => opt.trim() !== "")
-      : []
-    }));
+          q.type === "multiple" || q.type === "emoji"
+            ? q.options.filter((opt) => opt.trim() !== "")
+            : [],
+      }));
       const payload = { title, description: "VibeForm", questions: cleanQuestions };
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/forms`, payload);
       navigate(`/Preview/${res.data._id}`);
@@ -89,7 +90,17 @@ export default function CreateForm() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-cyan-200 via-pink-300 to-purple-200 overflow-hidden flex justify-center items-start py-10">
+    <div className="relative min-h-screen flex flex-col">
+      {/* Video Background */}
+      <video
+        src={bgVideo}
+        autoPlay
+        loop
+        muted
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+      />
+
+      {/* Neon Bubbles */}
       {bubbles.map((b, i) => (
         <span
           key={i}
@@ -106,46 +117,62 @@ export default function CreateForm() {
         />
       ))}
 
-      <div className="relative z-10 w-full max-w-2xl">
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-3xl mx-auto py-10 flex flex-col gap-6">
         <Navbar isLoggedIn={true} />
+
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 flex justify-center items-center gap-3">
+            <SparklesIcon className="w-10 h-10 text-pink-400" />
+            Create Your VibeForm
+          </h1>
+          <p className="text-lg text-gray-200 mt-2">
+            Add questions, emojis, and multiple-choice options to build a fun survey!
+          </p>
+        </div>
+
+        {/* Form Card */}
         <form
           onSubmit={handleSubmit}
-          className="relative z-10 bg-white/20 backdrop-blur-sm p-10 rounded-3xl shadow-2xl border border-white/30"
+          className="relative z-10 bg-white/20 backdrop-blur-lg border border-white/30 rounded-3xl p-10 shadow-2xl flex flex-col gap-6"
         >
-          <h2 className="text-4xl font-bold mb-8 text-center text-pink-400 flex justify-center items-center gap-2 neon-text">
-            <SparklesIcon className="w-8 h-8 text-pink-400" />
-            Let's Create Your VibeForm
-          </h2>
-
-          <label className="block mb-2 font-bold text-gray-800">
-            Form Title
-          </label>
+          {/* Form Title */}
+          <label className="block text-gray-100 font-bold">Form Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full mb-6 px-4 py-3 border border-white/50 rounded-xl bg-white/20 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
             placeholder="Your Form Title"
             required
+            className="w-full px-4 py-3 rounded-xl border border-white/50 bg-white/20 placeholder-gray-200 text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
           />
 
-          <div className="mb-6">
-            <h3 className="font-bold mb-4 text-lg text-gray-800">Questions</h3>
+          {/* Questions */}
+          <div>
+            <h2 className="text-gray-100 font-bold mb-4 text-lg flex items-center gap-2">
+              <PencilSquareIcon className="w-6 h-6 text-cyan-400" />
+              Questions
+            </h2>
+
             {questions.map((q, index) => (
-              <div key={index} className="mb-4 border p-4 rounded-xl bg-white/30 backdrop-blur-md">
+              <div
+                key={index}
+                className="mb-4 border border-white/30 rounded-xl p-4 bg-white/10 backdrop-blur-md"
+              >
                 <div className="flex items-center gap-2 mb-2">
                   <input
                     type="text"
                     placeholder={`Question ${index + 1}`}
                     value={q.question}
                     onChange={(e) => handleQuestionChange(index, e.target.value)}
-                    className="flex-1 px-3 py-2 border rounded bg-white/10 placeholder-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
+                    className="flex-1 px-3 py-2 rounded bg-white/10 placeholder-gray-300 text-gray-100 border border-white/30 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => deleteQuestion(index)}
-                    className="text-red-500 hover:text-red-700 transition"
+                    className="text-red-400 hover:text-red-600 transition"
                   >
                     <Trash2 className="w-6 h-6" />
                   </button>
@@ -158,13 +185,13 @@ export default function CreateForm() {
                         type="text"
                         value={opt}
                         onChange={(e) => handleOptionChange(index, oIndex, e.target.value)}
-                        className="flex-1 px-3 py-2 border rounded bg-white/10 placeholder-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
+                        className="flex-1 px-3 py-2 rounded bg-white/10 placeholder-gray-300 text-gray-100 border border-white/30 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => deleteOption(index, oIndex)}
-                        className="text-red-500 hover:text-red-700 transition"
+                        className="text-red-400 hover:text-red-600 transition"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -203,32 +230,34 @@ export default function CreateForm() {
                   </div>
                 )}
 
-                <p className="text-sm text-gray-400 mt-1">Type: {q.type}</p>
+                <p className="text-sm text-gray-200 mt-1">Type: {q.type}</p>
               </div>
             ))}
 
-            <div className="flex flex-wrap gap-3 mb-6">
+            {/* Add Question Buttons */}
+            <div className="flex flex-wrap gap-3 mt-3">
               {[
-                { label: "+ Text", type: "short" },   
+                { label: "+ Text", type: "short" },
                 { label: "+ Email", type: "email" },
                 { label: "+ Phone", type: "phone" },
                 { label: "+ DOB", type: "date" },
                 { label: "+ Number", type: "number" },
                 { label: "+ Multiple Choice", type: "multiple" },
                 { label: "+ Emoji Rating", type: "emoji" },
-          ].map((btn) => (
-            <button
-               key={btn.type}
-               type="button"
-               onClick={() => addQuestion(btn.type)}
-               className="bg-pink-400 text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition"
-            >
-               {btn.label}
-        </button>
-      ))}
+              ].map((btn) => (
+                <button
+                  key={btn.type}
+                  type="button"
+                  onClick={() => addQuestion(btn.type)}
+                  className="bg-pink-400 text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition"
+                >
+                  {btn.label}
+                </button>
+              ))}
             </div>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-pink-400 text-white py-3 rounded-xl hover:bg-pink-500 hover:scale-105 transition-transform duration-200 shadow-lg font-semibold text-lg"
@@ -238,6 +267,7 @@ export default function CreateForm() {
         </form>
       </div>
 
+      {/* Styles */}
       <style>
         {`
           @keyframes bubble-move {
@@ -247,9 +277,6 @@ export default function CreateForm() {
           .animate-bubble {
             animation: bubble-move 8s infinite ease-in-out;
             border-radius: 50%;
-          }
-          .neon-text {
-            text-shadow: 0 0 8px #ff77ff, 0 0 12px #00ffff, 0 0 20px #ff77ff;
           }
         `}
       </style>
