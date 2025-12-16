@@ -35,6 +35,7 @@ export default function CreateForm() {
       type,
       question: "",
       options: type === "multiple" || type === "emoji" ? [""] : [],
+      required: false
     };
     setQuestions([...questions, newQuestion]);
   };
@@ -202,13 +203,14 @@ export default function CreateForm() {
 
             <div className="flex flex-wrap gap-3 mb-6">
               {[
-                   { label: "+ Text", type: "text" },
-                   { label: "+ Email", type: "email" },
-                   { label: "+ Phone", type: "phone" },
-                   { label: "+ Dob", type: "date" },
-                   { label: "+ Multiple Choice", type: "multiple" },
-                   { label: "+ Emoji Rating", type: "emoji" },
-        ].map((btn) => (
+                { label: "+ Text", type: "short" },   
+                { label: "+ Email", type: "email" },
+                { label: "+ Phone", type: "phone" },
+                { label: "+ DOB", type: "date" },
+                { label: "+ Number", type: "number" },
+                { label: "+ Multiple Choice", type: "multiple" },
+                { label: "+ Emoji Rating", type: "emoji" },
+          ].map((btn) => (
             <button
                key={btn.type}
                type="button"
