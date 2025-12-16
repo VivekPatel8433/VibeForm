@@ -90,14 +90,16 @@ export default function CreateForm() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col">
+    <div className="relative min-h-screen flex flex-col overflow-x-hidden">
+
       {/* Video Background */}
       <video
         src={bgVideo}
         autoPlay
         loop
         muted
-        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        className="absolute inset-0 w-full h-full object-cover z-0"
+
       />
 
       {/* Neon Bubbles */}
