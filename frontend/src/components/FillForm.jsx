@@ -39,9 +39,19 @@ export default function FillForm({ form }) {
           break;
 
         case "phone":
-          const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/;
-          if (!phoneRegex.test(value)) {
-            return "Please enter a valid phone number";
+          // Remove all non-digit characters for validation
+          const digitsOnly = value.replace(/\D/g, "");
+          
+          // Canadian phone numbers: 10 digits (area code + 7 digits)
+          // Can optionally start with +1 or 1 (country code)
+          if (digitsOnly.length === 10) {
+            // Valid: 10 digits (e.g., 4031234567)
+            break;
+          } else if (digitsOnly.length === 11 && digitsOnly.startsWith("1")) {
+            // Valid: 11 digits starting with 1 (e.g., 14031234567)
+            break;
+          } else {
+            return "Please enter a valid Canadian phone number (10 digits)";
           }
           break;
 
@@ -178,11 +188,12 @@ export default function FillForm({ form }) {
         <div>
           <input
             type="tel"
-            placeholder="123-456-7890"
+            placeholder="403-123-4567 or (403) 123-4567"
             value={currentAns || ""}
             onChange={e => recordAnswer(qid, e.target.value, 5)}
             className={inputClassName}
           />
+          <p className="text-xs text-gray-500 mt-1">Canadian phone number format</p>
           {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
         </div>
       );
