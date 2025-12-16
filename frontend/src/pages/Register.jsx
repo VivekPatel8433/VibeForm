@@ -2,11 +2,13 @@ import React, { useState, useRef } from "react";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+   const navigate = useNavigate();
 
   // Bubbles (kept same, but added more blue tones)
   const bubbles = useRef(
@@ -30,8 +32,8 @@ export default function Register() {
     });
       
       console.log(res.data);
+      navigate("/login");
 
-      window.location.href = "/login"
     } catch (error) {
       console.log(error.response?.data || error);
       setMessage("Registration failed.");
@@ -116,7 +118,7 @@ export default function Register() {
       <Link className="text-blue-600 font-semibold ml-1" to="/login">
         Login
       </Link>
-</p>
+      </p>
 
       </form>
 
