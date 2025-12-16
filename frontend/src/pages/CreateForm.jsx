@@ -31,7 +31,6 @@ export default function CreateForm() {
 
   const addQuestion = (type) => {
     const newQuestion = {
-      id: crypto.randomUUID(),
       type,
       question: "",
       options: type === "multiple" || type === "emoji" ? [""] : [],
@@ -126,7 +125,7 @@ export default function CreateForm() {
           <div className="mb-6">
             <h3 className="font-bold mb-4 text-lg text-gray-800">Questions</h3>
             {questions.map((q, index) => (
-              <div key={q.id} className="mb-4 border p-4 rounded-xl bg-white/30 backdrop-blur-md">
+              <div key={index} className="mb-4 border p-4 rounded-xl bg-white/30 backdrop-blur-md">
                 <div className="flex items-center gap-2 mb-2">
                   <input
                     type="text"
