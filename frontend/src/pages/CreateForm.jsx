@@ -7,6 +7,7 @@ import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 
 export default function CreateForm() {
+  
   const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([]);
   const [showPicker, setShowPicker] = useState(null);
@@ -200,22 +201,23 @@ export default function CreateForm() {
             ))}
 
             <div className="flex flex-wrap gap-3 mb-6">
-              {["short", "multiple", "emoji", "custom"].map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => addQuestion(type)}
-                  className="bg-pink-400 text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition"
-                >
-                  {type === "short"
-                    ? "+ Short Text"
-                    : type === "multiple"
-                    ? "+ Multiple Choice"
-                    : type === "emoji"
-                    ? "+ Emoji Rating"
-                    : "+ Customize"}
-                </button>
-              ))}
+              {[
+                   { label: "+ Text", type: "text" },
+                   { label: "+ Email", type: "email" },
+                   { label: "+ Phone", type: "phone" },
+                   { label: "+ Dob", type: "date" },
+                   { label: "+ Multiple Choice", type: "multiple" },
+                   { label: "+ Emoji Rating", type: "emoji" },
+        ].map((btn) => (
+            <button
+               key={btn.type}
+               type="button"
+               onClick={() => addQuestion(btn.type)}
+               className="bg-pink-400 text-white px-4 py-2 rounded-xl hover:bg-pink-500 transition"
+            >
+               {btn.label}
+        </button>
+      ))}
             </div>
           </div>
 

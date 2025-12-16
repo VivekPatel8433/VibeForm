@@ -4,6 +4,7 @@ const questionSchema = new mongoose.Schema({
   type: { type: String, required: true }, // short, multiple, emoji, custom
   question: { type: String, required: true },
   options: [String], // multiple choice or emojis
+  required: { type: Boolean, default: false }
 }, { _id: true });
 
 const formSchema = new mongoose.Schema({
