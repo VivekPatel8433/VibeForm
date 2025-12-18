@@ -272,15 +272,23 @@ export default function FillForm({ form }) {
   const progress = Math.round((answeredCount / total) * 100);
 
   return (
-    <div className="relative min-h-screen flex flex-col">
+    <div className="relative min-h-screen overflow-x-hidden overflow-y-auto">
       {/* Video Background */}
-      <video
-        src={bgVideo}
-        autoPlay
-        loop
-        muted
-        className="absolute top-0 left-0 w-full h-full object-cover z-0"
-      />
+     <video
+       src={bgVideo}
+       autoPlay
+       loop
+       muted
+       playsInline
+      preload="auto"
+      className="
+        fixed inset-0
+        w-screen h-screen
+        object-cover
+        z-0
+        pointer-events-none
+      "
+   />
 
       {/* Neon Bubbles */}
       {bubbles.map((b, i) => (

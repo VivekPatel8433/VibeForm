@@ -6,7 +6,7 @@ export default function Navbar({ isLoggedIn }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-red-400 text-white p-4 shadow-lg">
+    <nav className="bg-gray-700 text-gray-300 p-4 shadow-lg rounded-lg">
       <div className="flex justify-between items-center">
         <div className="text-2xl font-bold drop-shadow-lg animate-pulse text-green-100">VibeForm</div>
 

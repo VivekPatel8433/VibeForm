@@ -6,6 +6,7 @@ import { SparklesIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 import bgVideo from "../assets/24370-342401472.mp4";
+import eventTypeQuestions from "../data/EventTypeList";
 
 export default function CreateForm() {
   const navigate = useNavigate();
@@ -28,6 +29,21 @@ export default function CreateForm() {
       ][Math.floor(Math.random() * 4)],
     }))
   ).current;
+  
+ const handleEventTypeChange = (type) => {
+  if (!type) return setQuestions([]);
+
+  const predefined = eventTypeQuestions[type].map((q) => ({
+    ...q,
+    options:
+      q.type === "multiple" || q.type === "emoji"
+        ? [...(q.options || [])]
+        : [],
+    sampleAnswer: q.sampleAnswer || "",
+  }));
+
+  setQuestions(predefined);
+};
 
   // Question functions
   const addQuestion = (type) => {
@@ -70,6 +86,13 @@ export default function CreateForm() {
     setQuestions(newQuestions);
   };
 
+  const toggleRequired = (index) => {
+  const newQuestions = [...questions];
+  newQuestions[index].required = !newQuestions[index].required;
+  setQuestions(newQuestions);
+};
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -90,7 +113,7 @@ export default function CreateForm() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col overflow-x-hidden">
+    <div className="relative min-h-screen overflow-x-hidden overflow-y-auto">
 
       {/* Video Background */}
       <video
@@ -98,9 +121,16 @@ export default function CreateForm() {
         autoPlay
         loop
         muted
-        className="absolute inset-0 w-full h-full object-cover z-0"
-
-      />
+        playsInline
+        preload="auto"
+         className="
+          fixed inset-0
+          w-screen h-screen
+          object-cover
+          z-0
+          pointer-events-none
+        "
+     />
 
       {/* Neon Bubbles */}
       {bubbles.map((b, i) => (
@@ -120,7 +150,7 @@ export default function CreateForm() {
       ))}
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-3xl mx-auto py-10 flex flex-col gap-6">
+      <div className="relative z-10 w-full max-w-3xl mx-auto py-10 px-4 flex flex-col gap-6">
         <Navbar isLoggedIn={true} />
 
         {/* Header */}
@@ -139,6 +169,32 @@ export default function CreateForm() {
           onSubmit={handleSubmit}
           className="relative z-10 bg-white/20 backdrop-blur-lg border border-white/30 rounded-3xl p-10 shadow-2xl flex flex-col gap-6"
         >
+          <label className="text-gray-100 font-bold">Event Type</label>
+
+        {/*Event List*/}
+      <select
+         onChange={(e) => handleEventTypeChange(e.target.value)}
+         className="
+           w-full px-4 py-3 rounded-xl
+           bg-white/20 backdrop-blur-lg
+           text-gray-100
+           border border-white/30
+           focus:outline-none
+           focus:ring-2 focus:ring-cyan-400
+          transition
+          "
+        >
+      <option value="" className="text-gray-400 bg-gray-900">
+         Select Event Type
+      </option>
+      <option value="business" className="text-white bg-gray-900">
+         Business Event
+      </option>
+      <option value="tech" className="text-white bg-gray-900">
+         Tech Event
+      </option>
+      </select>
+
           {/* Form Title */}
           <label className="block text-gray-100 font-bold">Form Title</label>
           <input
@@ -171,6 +227,7 @@ export default function CreateForm() {
                     className="flex-1 px-3 py-2 rounded bg-white/10 placeholder-gray-300 text-gray-100 border border-white/30 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
                     required
                   />
+                  
                   <button
                     type="button"
                     onClick={() => deleteQuestion(index)}
@@ -179,6 +236,26 @@ export default function CreateForm() {
                     <Trash2 className="w-6 h-6" />
                   </button>
                 </div>
+
+           <div className="flex items-center gap-3 mb-3">
+               <label className="flex items-center gap-2 cursor-pointer">
+          <input
+              type="checkbox"
+              checked={q.required}
+              onChange={() => toggleRequired(index)}
+              className="w-4 h-4 accent-pink-400"
+          />
+          <span className="text-sm text-gray-200">
+              Required
+          </span>
+           </label>
+
+           {q.required && (
+            <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-pink-400/20 text-pink-300">
+             Mandatory
+          </span>
+            )}
+        </div>
 
                 {(q.type === "multiple" || q.type === "emoji") &&
                   q.options.map((opt, oIndex) => (
@@ -262,7 +339,7 @@ export default function CreateForm() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-pink-400 text-white py-3 rounded-xl hover:bg-pink-500 hover:scale-105 transition-transform duration-200 shadow-lg font-semibold text-lg"
+            className="w-full bg-gray-500 text-white py-3 rounded-xl hover:bg-pink-500 hover:scale-105 transition-transform duration-200 shadow-lg font-semibold text-lg"
           >
             Preview Form
           </button>
