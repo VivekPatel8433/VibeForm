@@ -272,7 +272,7 @@ export default function FillForm({ form }) {
   const progress = Math.round((answeredCount / total) * 100);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden overflow-y-auto">
+    <div className="relative min-h-screen w-screen overflow-x-hidden">
       {/* Video Background */}
      <video
        src={bgVideo}
@@ -307,6 +307,7 @@ export default function FillForm({ form }) {
         />
       ))}
 
+      <div className="relative z-10 w-full max-w-2xl mx-auto py-10 px-4 flex flex-col gap-6">
       <Navbar isLoggedIn={false} />
 
       <div className="flex-grow flex justify-center p-6 z-10 relative">
@@ -400,7 +401,7 @@ export default function FillForm({ form }) {
           </div>
         </div>
       </div>
-
+</div>
       {/* Styles */}
       <style>
         {`

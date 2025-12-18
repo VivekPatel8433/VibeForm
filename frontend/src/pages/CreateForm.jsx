@@ -113,7 +113,7 @@ export default function CreateForm() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden overflow-y-auto">
+    <div className="relative min-h-screen w-screen overflow-x-hidden">
 
       {/* Video Background */}
       <video
