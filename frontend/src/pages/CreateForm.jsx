@@ -345,8 +345,13 @@ export default function CreateForm() {
             Preview Form
           </button>
         </form>
+        {/* Powered By */}
+      <div className="relative z-10 w-full max-w-3xl mx-auto py-4 text-center">
+           <p className="text-gray-400 text-sm">
+          Powered by <span className="font-semibold text-white"><a href="https://www.eventgo.ca/">EventGo</a></span>
+          </p>
       </div>
-
+      </div>
       {/* Styles */}
       <style>
         {`
