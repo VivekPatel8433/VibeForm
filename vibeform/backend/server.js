@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 5000 ;
 app.use(cors({ 
   origin: ['https://vibe-form-one.vercel.app'], 
   credentials: true
-}));  // ,     http://localhost:5173
- 
+}));  // ,       http://localhost:5173
+  
 app.use(express.json());
 
 // Routes

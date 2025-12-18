@@ -218,24 +218,24 @@ export default function CreateForm() {
                 key={index}
                 className="mb-4 border border-white/30 rounded-xl p-4 bg-white/10 backdrop-blur-md"
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="text"
-                    placeholder={`Question ${index + 1}`}
-                    value={q.question}
-                    onChange={(e) => handleQuestionChange(index, e.target.value)}
-                    className="flex-1 px-3 py-2 rounded bg-white/10 placeholder-gray-300 text-gray-100 border border-white/30 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
-                    required
-                  />
-                  
-                  <button
-                    type="button"
-                    onClick={() => deleteQuestion(index)}
-                    className="text-red-400 hover:text-red-600 transition"
-                  >
-                    <Trash2 className="w-6 h-6" />
-                  </button>
-                </div>
+               <div className="flex items-center gap-2 flex-wrap">
+          <input
+             type="text"
+             placeholder={`Question ${index + 1}`}
+             value={q.question}
+             onChange={(e) => handleQuestionChange(index, e.target.value)}
+             className="flex-1 min-w-0 px-3 py-2 rounded bg-white/10 placeholder-gray-300 text-gray-100 border border-white/30 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
+             required
+         />
+  
+         <button
+            type="button"
+              onClick={() => deleteQuestion(index)}
+              className="text-red-400 hover:text-red-600 transition p-1 flex-shrink-0"
+           >
+           <Trash2 className="w-6 h-6" />
+           </button>
+          </div>
 
            <div className="flex items-center gap-3 mb-3">
                <label className="flex items-center gap-2 cursor-pointer">
@@ -257,34 +257,35 @@ export default function CreateForm() {
             )}
         </div>
 
-                {(q.type === "multiple" || q.type === "emoji") &&
-                  q.options.map((opt, oIndex) => (
-                    <div key={oIndex} className="flex mb-2 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={opt}
-                        onChange={(e) => handleOptionChange(index, oIndex, e.target.value)}
-                        className="flex-1 px-3 py-2 rounded bg-white/10 placeholder-gray-300 text-gray-100 border border-white/30 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => deleteOption(index, oIndex)}
-                        className="text-red-400 hover:text-red-600 transition"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                      {q.type === "multiple" && (
-                        <button
-                          type="button"
-                          onClick={() => addOption(index)}
-                          className="bg-pink-400 text-white px-3 py-1 rounded hover:bg-pink-500 transition"
-                        >
-                          + Option
-                        </button>
-                      )}
-                    </div>
-                  ))}
+         <div className="flex flex-wrap gap-2">
+            {q.options.map((opt, oIndex) => (
+            <div key={oIndex} className="flex items-center gap-1 flex-grow min-w-0">
+             <input
+               type="text"
+               value={opt}
+               onChange={(e) => handleOptionChange(index, oIndex, e.target.value)}
+              className="flex-1 min-w-0 px-2 py-1 rounded bg-white/10 placeholder-gray-300 text-gray-100 border border-white/30 focus:outline-none focus:ring-2 focus:ring-pink-400 transition text-sm"
+              required
+           />
+              <button
+                type="button"
+                onClick={() => deleteOption(index, oIndex)}
+                className="text-red-400 hover:text-red-600 transition p-1 flex-shrink-0"
+             >
+              <Trash2 className="w-4 h-4" />
+              </button>
+            {q.type === "multiple" && (
+         <button
+          type="button"
+          onClick={() => addOption(index)}
+           className="bg-pink-400 text-white px-2 py-0.5 rounded hover:bg-pink-500 text-sm flex-shrink-0"
+        >
+           + Option
+         </button>
+          )}
+       </div>
+       ))}
+      </div>
 
                 {q.type === "emoji" && (
                   <button
